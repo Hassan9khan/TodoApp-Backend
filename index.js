@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
+import express, { json } from "express";
 import cors from "cors";
 
 const app = express();
@@ -80,9 +80,28 @@ app.get("/user/:id", (req, res) => {
   })
 });
 
+// delete a user
+app.delete("/user/:id" , (req , res) => {
+    const { id } = req.params
+
+    const index = users.findIndex((item) => item.id === +id)
+
+    if(index === -1){
+        res.status(404).json({
+            message: "no user found"
+        })
+        return
+    }
+
+    users.splice(index , 1)
+    res.status(200).json({
+        message: "user is deleted",
+        data: users,
+    })
+})
+
 // edit a user
 
-// delete a user
 
 // Server
 app.listen(port, () => {
