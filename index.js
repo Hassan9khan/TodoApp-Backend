@@ -68,21 +68,42 @@ app.get("/user/:id", (req, res) => {
 
   const index = users.findIndex((item) => item.id === +id);
 
-  if(index === -1) {
+  if (index === -1) {
     res.status(404).json({
-        message: " user not found"
-    })
-    return
+      message: " user not found",
+    });
+    return;
   }
 
   res.status(200).json({
-    data: users[index]
-  })
+    data: users[index],
+  });
 });
 
 // delete a user
-app.delete("/user/:id" , (req , res) => {
-    const { id } = req.params
+app.delete("/user/:id", (req, res) => {
+  const { id } = req.params;
+
+  const index = users.findIndex((item) => item.id === +id);
+
+  if (index === -1) {
+    res.status(404).json({
+      message: "no user found",
+    });
+    return;
+  }
+
+  users.splice(index, 1);
+  res.status(200).json({
+    message: "user is deleted",
+    data: users,
+  });
+});
+
+// edit a user
+app.put("/user/:id", (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
 
     const index = users.findIndex((item) => item.id === +id)
 
@@ -92,16 +113,23 @@ app.delete("/user/:id" , (req , res) => {
         })
         return
     }
+    if(!title){
+        res.status(400).json({
+            message: "title is required"
+        })
+        return
+    }
 
-    users.splice(index , 1)
+    users[index].title = title;
+
     res.status(200).json({
-        message: "user is deleted",
-        data: users,
+        message: "user edited",
+        data: users
     })
-})
 
-// edit a user
 
+
+});
 
 // Server
 app.listen(port, () => {
